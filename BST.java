@@ -4,8 +4,8 @@
 public class BST 
 { // Binary Search Tree implementation
 
-	private Node<String> root;
-	private int nodeCnt;
+	protected Node<String> root;
+	protected int nodeCnt;
 	protected boolean NOBSTified = false;
 	protected boolean OBSTified = false;
 	
@@ -70,7 +70,7 @@ public class BST
 	
 	public int sumWeightedPath() 
 	{
-		
+		//TODO
 	}
 	
 	public void resetCounters()
@@ -80,11 +80,13 @@ public class BST
 	
 	public void nobst() 
 	{
+		//TODO
 		// Set NOBSTified to true.
 	}	
 	
 	public void obst() 
 	{
+		//TODO
 		// Set OBSTified to true.
 	}	
 	
