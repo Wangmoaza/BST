@@ -24,6 +24,53 @@ public class BST
 	{
 		root = inserthelp(root, key);
 	}
+
+	public boolean find(String key)
+	{
+		return findhelp(root, key);
+	}
+
+	public int sumFreq() 
+	{
+		return inorder(root, "freq", 0);
+	}
+	
+	public int sumProbes() 
+	{
+		return inorder(root, "probe", 0);
+	}
+	
+	public int sumWeightedPath() 
+	{
+		int[] info = {1, 0}; // {depth, weighted sum}
+		inorder_weighted(root, info);
+		
+		return info[1];
+	}
+	
+	public void resetCounters()
+	{
+		inorder(root, "reset", 0);
+	}
+	
+	public void nobst() 
+	{
+		NOBSTified = true;
+		//TODO
+		// Set NOBSTified to true.
+	}	
+	
+	public void obst() 
+	{
+		OBSTified = true;
+		//TODO
+		// Set OBSTified to true.
+	}	
+	
+	public void print() 
+	{
+		inorder(root, "print", 0);
+	}
 	
 	private Node<String> inserthelp(Node<String> rt, String k)
 	{
@@ -42,11 +89,6 @@ public class BST
 		return rt;
 	}
 	
-	public boolean find(String key)
-	{
-		return findhelp(root, key);
-	}
-	
 	private boolean findhelp(Node<String> rt, String k)
 	{
 		if (rt == null) return false;
@@ -58,67 +100,37 @@ public class BST
 			return findhelp(rt.left(), k);
 	}
 	
-	public int sumFreq() 
+	private void inorder_weighted(Node<String> rt, int[] info)
 	{
-		return inorder(root, "freq", 0);
-	}
-	
-	public int sumProbes() 
-	{
-		return inorder(root, "probe", 0);
-	}
-	
-	public int sumWeightedPath() 
-	{
-		//TODO
-	}
-	
-	public void resetCounters()
-	{
-		inorder(root, "reset", 0);
-	}
-	
-	public void nobst() 
-	{
-		//TODO
-		// Set NOBSTified to true.
-	}	
-	
-	public void obst() 
-	{
-		//TODO
-		// Set OBSTified to true.
-	}	
-	
-	public void print() 
-	{
-		inorder(root, "print", 0);
+		// info is a size 2 array that contains depth of current node (info[0]) and weighted sum (info[1])
+		if (rt == null)
+			return;
+		
+		info[0]++;
+		inorder_weighted(rt.left(), info);
+		info[1] += info[0] * rt.getFreq();
+		inorder_weighted(rt.right(), info);
+		info[0]--;
 	}
 	
 	private int inorder(Node<String> rt, String op, int sum)
 	{	
 		if (rt == null) return sum;
 		inorder(rt.left(), op, sum);
-		switch (op)
-		{
-		case "print":
+		
+		if (op.equals("print"))
 			System.out.println(rt);
-			break;
-		case "freq":
+		else if (op.equals("freq"))
 			sum += rt.getFreq();
-			break;
-		case "probe":
+		else if (op.equals("probe"))
 			sum += rt.accessCount();
-			break;
-		case "reset":
+		else if (op.equals("reset"))
 			rt.resetCounters();
-		default:
+		else
 			System.out.println("Invalid operation");
-		}
+
 		inorder(rt.left(), op, sum);
 		return sum;
 	}
-
-  
 }
 
