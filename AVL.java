@@ -15,7 +15,7 @@ public class AVL extends BST
 	  return 1 + Math.max( height(rt.left()), height(rt.right()) );
   }
   
-  private Node<String> inserthelp(Node<String> rt, String k)
+  protected Node<String> inserthelp(Node<String> rt, String k)
   {
 	  // modification from lecture note
 	  if (rt == null)
