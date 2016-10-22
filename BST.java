@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class BST 
 { // Binary Search Tree implementation
 
+	public static int BIGNUM = 99999999;
 	protected Node<String> root;
 	protected int nodeCnt;
 	protected boolean NOBSTified = false;
@@ -63,13 +64,13 @@ public class BST
 	
 	public void nobst() 
 	{
+		// Set NOBSTified to true.
 		NOBSTified = true;
-		//TODO
 		ArrayList<Node<String>> nodeList = new ArrayList<>();
 		nodeList.add(null); // set 0th element to null to start index at 1	
 		inorder_nodes(root, nodeList); // now nodeList contains all nodes of bst in increasing order
-		
-		// Set NOBSTified to true.
+
+		root = build_nobst(nodeList, 1, nodeCnt);
 	}	
 	
 	public void obst() 
@@ -93,10 +94,7 @@ public class BST
 					cost[low][high] = 0;
 					bestroot[low][high] = 0;
 				}
-				else if (low == high)
-				{
-					cost[low][high] = nodeList.get(low).getFreq();
-				}
+
 				else
 				{
 					cost[low][high] = obst_sumFreq(nodeList, low, high) + findMin(nodeList, cost, bestroot, low, high);
@@ -104,8 +102,8 @@ public class BST
 			}
 		}
 		
-		// build obst
-		root = build_obst(root, nodeList, bestroot, 1, nodeCnt);
+		// build obst from bestroot matrix
+		root = build_obst(nodeList, bestroot, 1, nodeCnt);
 	}	
 	
 	public void print() 
@@ -194,8 +192,8 @@ public class BST
 	
 	protected int findMin(ArrayList<Node<String>> nodeList, int[][] cost, int[][] bestroot, int low, int high)
 	{
-		// return min and save min producing root to bestroot
-		int min = -1;
+		// return min cost and save min producing root to bestroot
+		int min = BIGNUM;
 		int minIndex = -1;
 		for (int r = low; r <= high; r++)
 		{
@@ -211,20 +209,65 @@ public class BST
 		return min;
 	}
 	
-	protected Node<String> build_obst(Node<String> rt, ArrayList<Node<String>> nodeList, int[][] bestroot, int low, int high)
+	protected Node<String> build_obst(ArrayList<Node<String>> nodeList, int[][] bestroot, int low, int high)
 	{
-		// FIXME
 		int idx = bestroot[low][high];
-		rt = nodeList.get(idx);
+		Node<String> rt = nodeList.get(idx);
 		
-		if (rt == null) return rt;
+		if (rt == null) // base case 
+			return rt;
 		
-		build_obst(rt, nodeList, bestroot, 1, idx-1);
-		build_obst(rt, nodeList, bestroot, idx+1, nodeCnt);
-		
-		rt.setLeft(nodeList.get(bestroot[1][idx-1]));
-		rt.setRight(nodeList.get(bestroot[idx+1][nodeCnt]));
+		rt.setLeft(build_obst(nodeList, bestroot, low, idx-1));
+		rt.setRight(build_obst(nodeList, bestroot, idx+1, high));
 		return rt;
+	}
+	
+	protected int sumFreq_list(ArrayList<Node<String>> nodeList, int low, int high)
+	{
+		// return sum of the node frequency in nodeList from index low to high
+		int sum = 0;
+		for (int i = low; i <= high; i++)
+			sum += nodeList.get(i).getFreq();
+		
+		return sum;
+	}
+	
+	protected Node<String> build_nobst(ArrayList<Node<String>> nodeList, int low, int high)
+	{
+		Node<String> minRoot;
+		int min = BIGNUM;
+		int minIdx = 0;
+		if (low < high)
+		{
+			// update min and minIdx by looping through all the nodes in the range
+			for (int r = low; r <= high; r++)
+			{
+				int diff = sumFreq_list(nodeList, low, r-1) - sumFreq_list(nodeList, r+1, high); // left subtree - right subtree
+				if (Math.abs(diff) < Math.abs(min))
+				{
+					min = diff;
+					minIdx = r;
+				}
+				else if (diff + min == 0 && diff < min) // tie breaking: if diff < 0, then right subtree is heavier
+					minIdx = r;
+			}
+			
+			minRoot = nodeList.get(minIdx);
+			minRoot.setLeft(build_nobst(nodeList, low, minIdx-1));
+			minRoot.setRight(build_nobst(nodeList, minIdx+1, high));
+		}
+		
+		else if (low == high)// base case 1 : one node
+		{
+			minRoot = nodeList.get(low);
+			minRoot.setLeft(null);
+			minRoot.setRight(null);
+		}
+		
+		else // base case 2 : empty tree
+			minRoot = null;
+		
+		return minRoot;
 	}
 }
 
