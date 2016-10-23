@@ -15,11 +15,13 @@ public class BST
 	protected int nodeCnt;
 	protected boolean NOBSTified = false;
 	protected boolean OBSTified = false;
+	protected Node[] nodeArr;
 	
 	public BST() 
 	{
 		root = null;
 		nodeCnt = 0;
+		nodeArr = null;
 	}
 	  
 	public int size() 
@@ -64,8 +66,11 @@ public class BST
 	{
 		// Set NOBSTified to true.
 		NOBSTified = true;
-		Node[] nodeArr = new Node[nodeCnt+1];
-		nodeArr[0] = null; // set 0th element to null to start index at 1	
+		if (nodeArr == null)
+		{
+			nodeArr = new Node[nodeCnt+1];
+			nodeArr[0] = null; // set 0th element to null to start index at 1	
+		}
 		inorder_nodes(root, nodeArr, 1); // now nodeArr contains all nodes of bst in increasing order
 
 		root = build_nobst(nodeArr, 1, nodeCnt);
@@ -78,9 +83,11 @@ public class BST
 		int[][] cost = new int[nodeCnt+2][nodeCnt+1];
 		int[][] bestroot = new int[nodeCnt+2][nodeCnt+1];
 		
-		Node[] nodeArr = new Node[nodeCnt+1];
-		nodeArr[0] = null; // set 0th element to null to start index at 1	
-		inorder_nodes(root, nodeArr, 1); // now nodeArr contains all nodes of bst in increasing order
+		if (nodeArr == null)
+		{
+			nodeArr = new Node[nodeCnt+1];
+			nodeArr[0] = null; // set 0th element to null to start index at 1	
+		}
 		
 		// construct cost and bestroot matrix
 		for (int low = nodeCnt + 1; low >= 1; low--) // bottom-up
