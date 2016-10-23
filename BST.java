@@ -194,7 +194,7 @@ public class BST
 	{
 		// return min cost and save min producing root to bestroot
 		int min = BIGNUM;
-		int minIndex = -1;
+		int minIndex = 0;
 		for (int r = low; r <= high; r++)
 		{
 			int c = cost[low][r-1] + cost[r+1][high];
@@ -227,9 +227,8 @@ public class BST
 	{
 		// return sum of the node frequency in nodeArr from index low to high
 		int sum = 0;
-		int i = -10;
 
-		for (i = low; i <= high; i++)
+		for (int i = low; i <= high; i++)
 			sum += nodeArr[i].getFreq();
 		return sum;
 	}
