@@ -153,9 +153,10 @@ public class BST
 	protected int inorder_nodes(Node rt, Node[] arr, int idx)
 	{
 		if (rt == null) return idx;
-		inorder_nodes(rt.left(), arr, idx);
-		arr[idx++] = rt;
-		inorder_nodes(rt.right(), arr, idx);
+		idx = inorder_nodes(rt.left(), arr, idx);
+		arr[idx] = rt;
+		idx++;
+		idx = inorder_nodes(rt.right(), arr, idx);
 		return idx;
 	}
 	
@@ -219,9 +220,10 @@ public class BST
 	{
 		// return sum of the node frequency in nodeArr from index low to high
 		int sum = 0;
-		for (int i = low; i <= high; i++)
+		int i = -10;
+
+		for (i = low; i <= high; i++)
 			sum += nodeArr[i].getFreq();
-		
 		return sum;
 	}
 	
