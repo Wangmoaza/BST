@@ -3,7 +3,7 @@
 /**
  * 
  * @author Ha-Eun Hwangbo
- * @version 2016.10.21
+ * @version 2016.10.24
  *
  */
 
@@ -16,12 +16,14 @@ public class BST
 	protected boolean NOBSTified = false;
 	protected boolean OBSTified = false;
 	protected Node[] nodeArr;
+	protected int[][] sumFreqArr; // sumFreqArr[i][j]: sum of frequency from i-th node to j-th node
 	
 	public BST() 
 	{
 		root = null;
 		nodeCnt = 0;
 		nodeArr = null;
+		sumFreqArr = null;
 	}
 	  
 	public int size() 
@@ -72,6 +74,10 @@ public class BST
 			nodeArr[0] = null; // set 0th element to null to start index at 1	
 			inorder_nodes(root, nodeArr, 1); // now nodeArr contains all nodes of bst in increasing order
 		}
+		
+		if (sumFreqArr == null)
+			build_sumFreqArr();
+
 		root = build_nobst(nodeArr, 1, nodeCnt);
 	}	
 	
@@ -89,6 +95,9 @@ public class BST
 			inorder_nodes(root, nodeArr, 1); // now nodeArr contains all nodes of bst in increasing order
 		}
 		
+		if (sumFreqArr == null)
+			build_sumFreqArr();
+		
 		// construct cost and bestroot matrix
 		for (int low = nodeCnt + 1; low >= 1; low--) // bottom-up
 		{
@@ -102,7 +111,7 @@ public class BST
 
 				else
 				{
-					cost[low][high] = sumFreq_arr(nodeArr, low, high) + findMin(cost, bestroot, low, high);
+					cost[low][high] = sumFreqArr[low][high] + findMin(cost, bestroot, low, high);
 				}
 			}
 		}
@@ -223,16 +232,6 @@ public class BST
 		return rt;
 	}
 	
-	protected int sumFreq_arr(Node[] nodeArr, int low, int high)
-	{
-		// return sum of the node frequency in nodeArr from index low to high
-		int sum = 0;
-
-		for (int i = low; i <= high; i++)
-			sum += nodeArr[i].getFreq();
-		return sum;
-	}
-	
 	protected Node build_nobst(Node[] nodeArr, int low, int high)
 	{
 		Node minRoot;
@@ -243,7 +242,7 @@ public class BST
 			// update min and minIdx by looping through all the nodes in the range
 			for (int r = low; r <= high; r++)
 			{
-				int diff = sumFreq_arr(nodeArr, low, r-1) - sumFreq_arr(nodeArr, r+1, high); // left subtree - right subtree
+				int diff = sumFreqArr[low][r-1] - sumFreqArr[r+1][high]; // left subtree - right subtree
 				if (Math.abs(diff) < Math.abs(min))
 				{
 					min = diff;
@@ -269,6 +268,22 @@ public class BST
 			minRoot = null;
 		
 		return minRoot;
+	}
+	
+	protected void build_sumFreqArr()
+	{
+		sumFreqArr = new int[nodeCnt+2][nodeCnt+1];
+		for (int i = 1; i <= nodeCnt+1; i++) // initialize empty trees to zero
+			sumFreqArr[i][i-1] = 0;
+
+		for (int k = 1; k <= nodeCnt; k++)
+		{
+			for (int low = 1; low <= nodeCnt-k+1; low++)
+			{
+				int high = low + k - 1;
+				sumFreqArr[low][high] = sumFreqArr[low][high-1] + nodeArr[high].getFreq();
+			}
+		}
 	}
 }
 
