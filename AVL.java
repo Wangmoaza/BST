@@ -9,11 +9,11 @@ public class AVL extends BST
 	  root = inserthelp(root, key);
   }
   
-  protected Node<String> inserthelp(Node<String> rt, String k)
+  protected Node inserthelp(Node rt, String k)
   {
 	  // modification from lecture note
 	  if (rt == null) // base case 1: insert new node
-		  rt = new Node<String>(k);
+		  rt = new Node(k);
 	  
 	  else if (rt.key().compareTo(k) < 0) // rt is smaller than k
 	  {
@@ -46,11 +46,11 @@ public class AVL extends BST
 	  return rt;
   }
   
-  private Node<String> rotate_RR(Node<String> rt)
+  private Node rotate_RR(Node rt)
   {
 	  // k is inserted in rt's right subtree's right subtree
 	  // one left turn around rt
-	  Node<String> child = rt.right();
+	  Node child = rt.right();
 	  rt.setRight(child.left());
 	  child.setLeft(rt);
 	  
@@ -60,11 +60,11 @@ public class AVL extends BST
 	  return child; // return the new root
   }
   
-  private Node<String> rotate_LL(Node<String> rt)
+  private Node rotate_LL(Node rt)
   {
 	  // k is inserted in rt's left subtree's left subtree
 	  // one right turn around rt
-	  Node<String> child = rt.left();
+	  Node child = rt.left();
 	  rt.setLeft(child.right());
 	  child.setRight(rt);
 	  
@@ -74,25 +74,25 @@ public class AVL extends BST
 	  return child; // return the new root
   }
   
-  private Node<String> rotate_RL(Node<String> rt)
+  private Node rotate_RL(Node rt)
   {
 	  // k is inserted in rt's right subtree's left subtree
 	  // one right turn around right subtree, then one left turn around rt
 	  rt.setRight(rotate_LL(rt.right()));
-	  Node<String> newRoot = rotate_RR(rt);
+	  Node newRoot = rotate_RR(rt);
 	  return newRoot;
   }
   
-  private Node<String> rotate_LR(Node<String> rt)
+  private Node rotate_LR(Node rt)
   {
 	  // k is inserted in rt's left subtree's right subtree
 	  // one left turn around left subtree, then one right turn around rt
 	  rt.setLeft(rotate_RR(rt.left()));
-	  Node<String> newRoot = rotate_LL(rt);
+	  Node newRoot = rotate_LL(rt);
 	  return newRoot;
   }
 
-  private int height(Node<String> rt)
+  private int height(Node rt)
   {
 	  if (rt == null) return 0;
 	  return rt.getHeight();

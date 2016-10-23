@@ -7,13 +7,11 @@
  *
  */
 
-import java.util.ArrayList;
-
 public class BST 
 { // Binary Search Tree implementation
 
 	public static int BIGNUM = 99999999;
-	protected Node<String> root;
+	protected Node root;
 	protected int nodeCnt;
 	protected boolean NOBSTified = false;
 	protected boolean OBSTified = false;
@@ -66,11 +64,11 @@ public class BST
 	{
 		// Set NOBSTified to true.
 		NOBSTified = true;
-		ArrayList<Node<String>> nodeList = new ArrayList<>();
-		nodeList.add(null); // set 0th element to null to start index at 1	
-		inorder_nodes(root, nodeList); // now nodeList contains all nodes of bst in increasing order
+		Node[] nodeArr = new Node[nodeCnt+1];
+		nodeArr[0] = null; // set 0th element to null to start index at 1	
+		inorder_nodes(root, nodeArr, 1); // now nodeArr contains all nodes of bst in increasing order
 
-		root = build_nobst(nodeList, 1, nodeCnt);
+		root = build_nobst(nodeArr, 1, nodeCnt);
 	}	
 	
 	public void obst() 
@@ -80,9 +78,9 @@ public class BST
 		int[][] cost = new int[nodeCnt+2][nodeCnt+1];
 		int[][] bestroot = new int[nodeCnt+2][nodeCnt+1];
 		
-		ArrayList<Node<String>> nodeList = new ArrayList<>();
-		nodeList.add(null); // set 0th element to null to start index at 1	
-		inorder_nodes(root, nodeList); // now nodeList contains all nodes of bst in increasing order
+		Node[] nodeArr = new Node[nodeCnt+1];
+		nodeArr[0] = null; // set 0th element to null to start index at 1	
+		inorder_nodes(root, nodeArr, 1); // now nodeArr contains all nodes of bst in increasing order
 		
 		// construct cost and bestroot matrix
 		for (int low = nodeCnt + 1; low >= 1; low--) // bottom-up
@@ -97,13 +95,13 @@ public class BST
 
 				else
 				{
-					cost[low][high] = sumFreq_list(nodeList, low, high) + findMin(nodeList, cost, bestroot, low, high);
+					cost[low][high] = sumFreq_arr(nodeArr, low, high) + findMin(cost, bestroot, low, high);
 				}
 			}
 		}
 		
 		// build obst from bestroot matrix
-		root = build_obst(nodeList, bestroot, 1, nodeCnt);
+		root = build_obst(nodeArr, bestroot, 1, nodeCnt);
 	}	
 	
 	public void print() 
@@ -111,12 +109,12 @@ public class BST
 		inorder(root, "print", 0);
 	}
 	
-	protected Node<String> inserthelp(Node<String> rt, String k)
+	protected Node inserthelp(Node rt, String k)
 	{
 		if (rt == null) // base case 1: insert new node at the leaf
 		{
 			nodeCnt++;
-			return new Node<String>(k);
+			return new Node(k);
 		}
 		else if (rt.key().compareTo(k) < 0) // rt.key is smaller than k
 			rt.setRight( inserthelp(rt.right(), k) );
@@ -128,7 +126,7 @@ public class BST
 		return rt;
 	}
 	
-	protected boolean findhelp(Node<String> rt, String k)
+	protected boolean findhelp(Node rt, String k)
 	{
 		if (rt == null) return false; // base case 1: key not found
 		
@@ -140,7 +138,7 @@ public class BST
 			return findhelp(rt.left(), k);
 	}
 	
-	protected void postorder_weighted(Node<String> rt, int[] info)
+	protected void postorder_weighted(Node rt, int[] info)
 	{
 		// info is a size 2 array that contains depth of current node + 1 (info[0]) and weighted sum (info[1])
 		if (rt == null) return;
@@ -152,15 +150,16 @@ public class BST
 		info[1] += info[0] * rt.getFreq();
 	}
 	
-	protected void inorder_nodes(Node<String> rt, ArrayList<Node<String>> list)
+	protected int inorder_nodes(Node rt, Node[] arr, int idx)
 	{
-		if (rt == null) return;
-		inorder_nodes(rt.left(), list);
-		list.add(rt);
-		inorder_nodes(rt.right(), list);
+		if (rt == null) return idx;
+		inorder_nodes(rt.left(), arr, idx);
+		arr[idx++] = rt;
+		inorder_nodes(rt.right(), arr, idx);
+		return idx;
 	}
 	
-	protected int inorder(Node<String> rt, String op, int sum)
+	protected int inorder(Node rt, String op, int sum)
 	{	
 		// internal method for sumFreq, resetCounters, print, sumProbes
 		// inorder traversal
@@ -183,7 +182,7 @@ public class BST
 		return sum;
 	}
 	
-	protected int findMin(ArrayList<Node<String>> nodeList, int[][] cost, int[][] bestroot, int low, int high)
+	protected int findMin(int[][] cost, int[][] bestroot, int low, int high)
 	{
 		// return min cost and save min producing root to bestroot
 		int min = BIGNUM;
@@ -202,33 +201,33 @@ public class BST
 		return min;
 	}
 	
-	protected Node<String> build_obst(ArrayList<Node<String>> nodeList, int[][] bestroot, int low, int high)
+	protected Node build_obst(Node[] nodeArr, int[][] bestroot, int low, int high)
 	{
 		// build obst from information stored in bestroot matrix recursively
 		int idx = bestroot[low][high];
-		Node<String> rt = nodeList.get(idx);
+		Node rt = nodeArr[idx];
 		
 		if (rt == null) // base case 
 			return rt;
 		
-		rt.setLeft(build_obst(nodeList, bestroot, low, idx-1));
-		rt.setRight(build_obst(nodeList, bestroot, idx+1, high));
+		rt.setLeft(build_obst(nodeArr, bestroot, low, idx-1));
+		rt.setRight(build_obst(nodeArr, bestroot, idx+1, high));
 		return rt;
 	}
 	
-	protected int sumFreq_list(ArrayList<Node<String>> nodeList, int low, int high)
+	protected int sumFreq_arr(Node[] nodeArr, int low, int high)
 	{
-		// return sum of the node frequency in nodeList from index low to high
+		// return sum of the node frequency in nodeArr from index low to high
 		int sum = 0;
 		for (int i = low; i <= high; i++)
-			sum += nodeList.get(i).getFreq();
+			sum += nodeArr[i].getFreq();
 		
 		return sum;
 	}
 	
-	protected Node<String> build_nobst(ArrayList<Node<String>> nodeList, int low, int high)
+	protected Node build_nobst(Node[] nodeArr, int low, int high)
 	{
-		Node<String> minRoot;
+		Node minRoot;
 		int min = BIGNUM;
 		int minIdx = 0;
 		if (low < high)
@@ -236,7 +235,7 @@ public class BST
 			// update min and minIdx by looping through all the nodes in the range
 			for (int r = low; r <= high; r++)
 			{
-				int diff = sumFreq_list(nodeList, low, r-1) - sumFreq_list(nodeList, r+1, high); // left subtree - right subtree
+				int diff = sumFreq_arr(nodeArr, low, r-1) - sumFreq_arr(nodeArr, r+1, high); // left subtree - right subtree
 				if (Math.abs(diff) < Math.abs(min))
 				{
 					min = diff;
@@ -246,14 +245,14 @@ public class BST
 					minIdx = r;
 			}
 			
-			minRoot = nodeList.get(minIdx);
-			minRoot.setLeft(build_nobst(nodeList, low, minIdx-1));
-			minRoot.setRight(build_nobst(nodeList, minIdx+1, high));
+			minRoot = nodeArr[minIdx];
+			minRoot.setLeft(build_nobst(nodeArr, low, minIdx-1));
+			minRoot.setRight(build_nobst(nodeArr, minIdx+1, high));
 		}
 		
 		else if (low == high)// base case 1 : one node
 		{
-			minRoot = nodeList.get(low);
+			minRoot = nodeArr[low];
 			minRoot.setLeft(null);
 			minRoot.setRight(null);
 		}

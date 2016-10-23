@@ -1,20 +1,20 @@
-public class Node<Key>
+public class Node
   {
-	  private Key key;
+	  private String key;
 	  private int freq; 
 	  private int accessCnt; // access count
-	  private Node<Key> left; // pointer to left child
-	  private Node<Key> right; // pointer to right child
+	  private Node left; // pointer to left child
+	  private Node right; // pointer to right child
 	  private int height;
 	  
-	  public Node(Key k)
+	  public Node(String k)
 	  {
 		  key = k;
 		  left = null; right = null;
 		  freq = 1; accessCnt = 0; height = 1;
 	  }
 	  
-	  public Node(Key k, Node<Key> l, Node<Key> r)
+	  public Node(String k, Node l, Node r)
 	  {
 		  key = k;
 		  left = l; right = r;
@@ -31,27 +31,27 @@ public class Node<Key>
 		  return height;
 	  }
 	  
-	  public Key key()
+	  public String key()
 	  {
 		  return key;
 	  }
 	  
-	  public Node<Key> left()
+	  public Node left()
 	  {
 		  return left;
 	  }
 	  
-	  public Node<Key> right()
+	  public Node right()
 	  {
 		  return right;
 	  }
 	  
-	  public void setLeft(Node<Key> newNode)
+	  public void setLeft(Node newNode)
 	  {
 		  left = newNode;
 	  }
 	  
-	  public void setRight(Node<Key> newNode)
+	  public void setRight(Node newNode)
 	  {
 		  right = newNode;
 	  }
