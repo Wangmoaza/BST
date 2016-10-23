@@ -8,12 +8,6 @@ public class AVL extends BST
   {
 	  root = inserthelp(root, key);
   }
- 
-  public int height(Node<String> rt)
-  {
-	  if (rt == null) return 0;
-	  return 1 + Math.max( height(rt.left()), height(rt.right()) );
-  }
   
   protected Node<String> inserthelp(Node<String> rt, String k)
   {
@@ -47,7 +41,8 @@ public class AVL extends BST
 	  
 	  else // base case 2: key already exists, increase frequency
 		  rt.increaseFreq();
-	  
+	 
+	  rt.setHeight( 1 + Math.max( height(rt.left()), height(rt.right()) ) );
 	  return rt;
   }
   
@@ -58,6 +53,10 @@ public class AVL extends BST
 	  Node<String> child = rt.right();
 	  rt.setRight(child.left());
 	  child.setLeft(rt);
+	  
+	  // update height
+	  rt.setHeight( 1 + Math.max( height(rt.left()), height(rt.right()) ) );
+	  child.setHeight( 1 + Math.max( height(child.left()), height(child.right()) ) );
 	  return child; // return the new root
   }
   
@@ -68,6 +67,10 @@ public class AVL extends BST
 	  Node<String> child = rt.left();
 	  rt.setLeft(child.right());
 	  child.setRight(rt);
+	  
+	  // update height
+	  rt.setHeight( 1 + Math.max( height(rt.left()), height(rt.right()) ) );
+	  child.setHeight( 1 + Math.max( height(child.left()), height(child.right()) ) );
 	  return child; // return the new root
   }
   
@@ -89,4 +92,9 @@ public class AVL extends BST
 	  return newRoot;
   }
 
+  private int height(Node<String> rt)
+  {
+	  if (rt == null) return 0;
+	  return rt.getHeight();
+  }
 }

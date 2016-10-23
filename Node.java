@@ -5,12 +5,13 @@ public class Node<Key>
 	  private int accessCnt; // access count
 	  private Node<Key> left; // pointer to left child
 	  private Node<Key> right; // pointer to right child
+	  private int height;
 	  
 	  public Node(Key k)
 	  {
 		  key = k;
 		  left = null; right = null;
-		  freq = 1; accessCnt = 0;
+		  freq = 1; accessCnt = 0; height = 1;
 	  }
 	  
 	  public Node(Key k, Node<Key> l, Node<Key> r)
@@ -18,6 +19,16 @@ public class Node<Key>
 		  key = k;
 		  left = l; right = r;
 		  freq = 1; accessCnt = 0;
+	  }
+	  
+	  public void setHeight(int h)
+	  {
+		  height = h;
+	  }
+	  
+	  public int getHeight()
+	  {
+		  return height;
 	  }
 	  
 	  public Key key()
