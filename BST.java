@@ -165,7 +165,7 @@ public class BST
 		// internal method for sumFreq, resetCounters, print, sumProbes
 		// inorder traversal
 		if (rt == null) return sum; // base case
-		inorder(rt.left(), op, sum);
+		sum = inorder(rt.left(), op, sum);
 		
 		// operations
 		if (op.equals("print"))
@@ -179,7 +179,7 @@ public class BST
 		else
 			System.out.println("Invalid operation");
 
-		inorder(rt.right(), op, sum);
+		sum = inorder(rt.right(), op, sum);
 		return sum;
 	}
 	
