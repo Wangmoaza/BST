@@ -2,11 +2,11 @@ import java.lang.Math;
 
 public class AVL extends BST
 {
-  public AVL() { }
+  public AVL() {  }
   
   public void insert(String key) 
   {
-	  inserthelp(root, key);
+	  root = inserthelp(root, key);
   }
  
   public int height(Node<String> rt)
@@ -18,13 +18,13 @@ public class AVL extends BST
   protected Node<String> inserthelp(Node<String> rt, String k)
   {
 	  // modification from lecture note
-	  if (rt == null)
+	  if (rt == null) // base case 1: insert new node
 		  rt = new Node<String>(k);
 	  
 	  else if (rt.key().compareTo(k) < 0) // rt is smaller than k
 	  {
 		  rt.setRight(inserthelp(rt.right(), k));
-		  if (height(rt.right()) - height(rt.left()) > 1)
+		  if (height(rt.right()) - height(rt.left()) > 1) // unbalanced: right is taller than left by 2
 		  {
 			  if (rt.right().key().compareTo(k) < 0)
 				  rt = rotate_RR(rt); // k is inserted in rt's right subtree's right subtree
@@ -33,10 +33,10 @@ public class AVL extends BST
 		  }  
 	  }
 	  
-	  else if (rt.key().compareTo(k) > 0)
+	  else if (rt.key().compareTo(k) > 0) // rt is bigger than k
 	  {
 		  rt.setLeft(inserthelp(rt.left(), k));
-		  if (height(rt.left()) - height(rt.right()) > 1)
+		  if (height(rt.left()) - height(rt.right()) > 1) // unbalanced: left is taller than right by 2
 		  {
 			  if (rt.left().key().compareTo(k) > 0)
 				  rt = rotate_LL(rt); // k is inserted in rt's left subtree's left subtree
@@ -45,7 +45,7 @@ public class AVL extends BST
 		  }
 	  }
 	  
-	  else
+	  else // base case 2: key already exists, increase frequency
 		  rt.increaseFreq();
 	  
 	  return rt;

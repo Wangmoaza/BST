@@ -54,7 +54,7 @@ public class BST
 		int[] info = {1, 0}; // {depth, weighted sum}
 		inorder_weighted(root, info);
 		
-		return info[1];
+		return info[1]; // sum of weighted path lengths
 	}
 	
 	public void resetCounters()
@@ -97,7 +97,7 @@ public class BST
 
 				else
 				{
-					cost[low][high] = obst_sumFreq(nodeList, low, high) + findMin(nodeList, cost, bestroot, low, high);
+					cost[low][high] = sumFreq_list(nodeList, low, high) + findMin(nodeList, cost, bestroot, low, high);
 				}
 			}
 		}
@@ -113,7 +113,7 @@ public class BST
 	
 	protected Node<String> inserthelp(Node<String> rt, String k)
 	{
-		if (rt == null)
+		if (rt == null) // base case 1: insert new node at the leaf
 		{
 			nodeCnt++;
 			return new Node<String>(k);
@@ -122,7 +122,7 @@ public class BST
 			rt.setRight( inserthelp(rt.right(), k) );
 		else if (rt.key().compareTo(k) > 0) // rt.key is larger than k
 			rt.setLeft( inserthelp(rt.left(), k) );
-		else // rt.key == k
+		else // base case 2: increase frequency by 1 if the key already exists
 			rt.increaseFreq();
 		
 		return rt;
@@ -130,9 +130,10 @@ public class BST
 	
 	protected boolean findhelp(Node<String> rt, String k)
 	{
-		if (rt == null) return false;
-		rt.access(); // increase access count by 1
-		if (rt.key().equals(k)) return true;
+		if (rt == null) return false; // base case 1: key not found
+		
+		rt.access(); // increase access count by 1 if node is probed
+		if (rt.key().equals(k)) return true; // base case 2: key found
 		if (rt.key().compareTo(k) < 0) 
 			return findhelp(rt.right(), k);
 		else 
@@ -141,9 +142,8 @@ public class BST
 	
 	protected void inorder_weighted(Node<String> rt, int[] info)
 	{
-		// info is a size 2 array that contains depth of current node (info[0]) and weighted sum (info[1])
-		if (rt == null)
-			return;
+		// info is a size 2 array that contains depth of current node + 1 (info[0]) and weighted sum (info[1])
+		if (rt == null) return;
 		
 		info[0]++;
 		inorder_weighted(rt.left(), info);
@@ -164,9 +164,10 @@ public class BST
 	{	
 		// internal method for sumFreq, resetCounters, print, sumProbes
 		// inorder traversal
-		if (rt == null) return sum;
+		if (rt == null) return sum; // base case
 		inorder(rt.left(), op, sum);
 		
+		// operations
 		if (op.equals("print"))
 			System.out.println(rt);
 		else if (op.equals("freq"))
@@ -178,15 +179,7 @@ public class BST
 		else
 			System.out.println("Invalid operation");
 
-		inorder(rt.left(), op, sum);
-		return sum;
-	}
-	
-	protected int obst_sumFreq(ArrayList<Node<String>> nodeList, int low, int high)
-	{
-		int sum = 0;
-		for (int i = low; i <= high; i++)
-			sum += nodeList.get(i).getFreq();
+		inorder(rt.right(), op, sum);
 		return sum;
 	}
 	
@@ -205,12 +198,13 @@ public class BST
 			}
 		}
 		
-		bestroot[low][high] = minIndex;
+		bestroot[low][high] = minIndex; // set bestroot
 		return min;
 	}
 	
 	protected Node<String> build_obst(ArrayList<Node<String>> nodeList, int[][] bestroot, int low, int high)
 	{
+		// build obst from information stored in bestroot matrix recursively
 		int idx = bestroot[low][high];
 		Node<String> rt = nodeList.get(idx);
 		
