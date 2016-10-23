@@ -52,7 +52,7 @@ public class BST
 	public int sumWeightedPath() 
 	{
 		int[] info = {1, 0}; // {depth, weighted sum}
-		inorder_weighted(root, info);
+		postorder_weighted(root, info);
 		
 		return info[1]; // sum of weighted path lengths
 	}
@@ -140,16 +140,16 @@ public class BST
 			return findhelp(rt.left(), k);
 	}
 	
-	protected void inorder_weighted(Node<String> rt, int[] info)
+	protected void postorder_weighted(Node<String> rt, int[] info)
 	{
 		// info is a size 2 array that contains depth of current node + 1 (info[0]) and weighted sum (info[1])
 		if (rt == null) return;
 		
 		info[0]++;
-		inorder_weighted(rt.left(), info);
-		info[1] += info[0] * rt.getFreq();
-		inorder_weighted(rt.right(), info);
+		postorder_weighted(rt.left(), info);
+		postorder_weighted(rt.right(), info);
 		info[0]--;
+		info[1] += info[0] * rt.getFreq();
 	}
 	
 	protected void inorder_nodes(Node<String> rt, ArrayList<Node<String>> list)
