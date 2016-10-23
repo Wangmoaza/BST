@@ -99,19 +99,26 @@ public class BST
 			build_sumFreqArr();
 		
 		// construct cost and bestroot matrix
-		for (int low = nodeCnt + 1; low >= 1; low--) // bottom-up
-		{
-			for (int high = low-1; high <= nodeCnt; high++) // left to right
-			{
-				if (low > high) // empty tree
-				{
-					cost[low][high] = 0;
-					bestroot[low][high] = 0;
-				}
+		for (int i = 1; i <= nodeCnt+1; i++) // initialize empty trees to zero
+			cost[i][i-1] = 0;
 
-				else
+		// diagonally build matrix
+		for (int k = 1; k <= nodeCnt; k++)
+		{
+			for (int low = 1; low <= nodeCnt-k+1; low++)
+			{
+				int high = low + k - 1;
+				cost[low][high] = BIGNUM;
+
+				// find minimum cost
+				for (int r = low; r <= high; r++)
 				{
-					cost[low][high] = sumFreqArr[low][high] + findMin(cost, bestroot, low, high);
+					int c = cost[low][r-1] + cost[r+1][high] + sumFreqArr[low][high];
+					if (c < cost[low][high])
+					{
+						cost[low][high] = c;
+						bestroot[low][high] = r;
+					}
 				}
 			}
 		}
@@ -197,25 +204,6 @@ public class BST
 
 		sum = inorder(rt.right(), op, sum);
 		return sum;
-	}
-	
-	protected int findMin(int[][] cost, int[][] bestroot, int low, int high)
-	{
-		// return min cost and save min producing root to bestroot
-		int min = BIGNUM;
-		int minIndex = 0;
-		for (int r = low; r <= high; r++)
-		{
-			int c = cost[low][r-1] + cost[r+1][high];
-			if (c < min)
-			{
-				min = c;
-				minIndex = r;
-			}
-		}
-		
-		bestroot[low][high] = minIndex; // set bestroot
-		return min;
 	}
 	
 	protected Node build_obst(int[][] bestroot, int low, int high)
