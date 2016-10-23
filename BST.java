@@ -70,9 +70,8 @@ public class BST
 		{
 			nodeArr = new Node[nodeCnt+1];
 			nodeArr[0] = null; // set 0th element to null to start index at 1	
+			inorder_nodes(root, nodeArr, 1); // now nodeArr contains all nodes of bst in increasing order
 		}
-		inorder_nodes(root, nodeArr, 1); // now nodeArr contains all nodes of bst in increasing order
-
 		root = build_nobst(nodeArr, 1, nodeCnt);
 	}	
 	
@@ -86,7 +85,8 @@ public class BST
 		if (nodeArr == null)
 		{
 			nodeArr = new Node[nodeCnt+1];
-			nodeArr[0] = null; // set 0th element to null to start index at 1	
+			nodeArr[0] = null; // set 0th element to null to start index at 1
+			inorder_nodes(root, nodeArr, 1); // now nodeArr contains all nodes of bst in increasing order
 		}
 		
 		// construct cost and bestroot matrix
