@@ -78,7 +78,7 @@ public class BST
 		if (sumFreqArr == null)
 			build_sumFreqArr();
 
-		root = build_nobst(nodeArr, 1, nodeCnt);
+		root = build_nobst(1, nodeCnt);
 	}	
 	
 	public void obst() 
@@ -117,7 +117,7 @@ public class BST
 		}
 		
 		// build obst from bestroot matrix
-		root = build_obst(nodeArr, bestroot, 1, nodeCnt);
+		root = build_obst(bestroot, 1, nodeCnt);
 	}	
 	
 	public void print() 
@@ -218,7 +218,7 @@ public class BST
 		return min;
 	}
 	
-	protected Node build_obst(Node[] nodeArr, int[][] bestroot, int low, int high)
+	protected Node build_obst(int[][] bestroot, int low, int high)
 	{
 		// build obst from information stored in bestroot matrix recursively
 		int idx = bestroot[low][high];
@@ -227,12 +227,12 @@ public class BST
 		if (rt == null) // base case 
 			return rt;
 		
-		rt.setLeft(build_obst(nodeArr, bestroot, low, idx-1));
-		rt.setRight(build_obst(nodeArr, bestroot, idx+1, high));
+		rt.setLeft(build_obst(bestroot, low, idx-1));
+		rt.setRight(build_obst(bestroot, idx+1, high));
 		return rt;
 	}
 	
-	protected Node build_nobst(Node[] nodeArr, int low, int high)
+	protected Node build_nobst(int low, int high)
 	{
 		Node minRoot;
 		int min = BIGNUM;
@@ -253,8 +253,8 @@ public class BST
 			}
 			
 			minRoot = nodeArr[minIdx];
-			minRoot.setLeft(build_nobst(nodeArr, low, minIdx-1));
-			minRoot.setRight(build_nobst(nodeArr, minIdx+1, high));
+			minRoot.setLeft(build_nobst(low, minIdx-1));
+			minRoot.setRight(build_nobst(minIdx+1, high));
 		}
 		
 		else if (low == high)// base case 1 : one node
