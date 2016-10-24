@@ -16,7 +16,7 @@ public class BST
 	protected boolean NOBSTified = false;
 	protected boolean OBSTified = false;
 	protected Node[] nodeArr;
-	protected int[][] sumFreqArr; // sumFreqArr[i][j]: sum of frequency from i-th node to j-th node
+	protected int[] sumFreqArr; // sumFreqArr[i][j]: sum of frequency from i-th node to j-th node
 	
 	public BST() 
 	{
@@ -113,7 +113,7 @@ public class BST
 				// find minimum cost
 				for (int r = low; r <= high; r++)
 				{
-					int c = cost[low][r-1] + cost[r+1][high] + sumFreqArr[low][high];
+					int c = cost[low][r-1] + cost[r+1][high] + sumFreq_arr(low, high);
 					if (c < cost[low][high])
 					{
 						cost[low][high] = c;
@@ -230,7 +230,7 @@ public class BST
 			// update min and minIdx by looping through all the nodes in the range
 			for (int r = low; r <= high; r++)
 			{
-				int diff = sumFreqArr[low][r-1] - sumFreqArr[r+1][high]; // left subtree - right subtree
+				int diff = sumFreq_arr(low, r-1) - sumFreq_arr(r+1, high); // left subtree - right subtree
 				if (Math.abs(diff) < Math.abs(min))
 				{
 					min = diff;
@@ -260,18 +260,18 @@ public class BST
 	
 	protected void build_sumFreqArr()
 	{
-		sumFreqArr = new int[nodeCnt+2][nodeCnt+1];
-		for (int i = 1; i <= nodeCnt+1; i++) // initialize empty trees to zero
-			sumFreqArr[i][i-1] = 0;
-
-		for (int k = 1; k <= nodeCnt; k++)
-		{
-			for (int low = 1; low <= nodeCnt-k+1; low++)
-			{
-				int high = low + k - 1;
-				sumFreqArr[low][high] = sumFreqArr[low][high-1] + nodeArr[high].getFreq();
-			}
-		}
+		// sumFreqArr[i] contains sum of frequencies from node 1 to i
+		sumFreqArr = new int[nodeCnt+1];
+		
+		sumFreqArr[0] = 0;
+		for(int i = 1; i <=nodeCnt; i++)
+			sumFreqArr[i] = sumFreqArr[i-1] + nodeArr[i].getFreq();
+	}
+	
+	protected int sumFreq_arr(int low, int high)
+	{
+		// return frequency sum from low to high
+		return sumFreqArr[high] - sumFreqArr[low-1];
 	}
 }
 
