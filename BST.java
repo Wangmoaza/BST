@@ -108,17 +108,21 @@ public class BST
 			for (int low = 1; low <= nodeCnt-k+1; low++)
 			{
 				int high = low + k - 1;
-				cost[low][high] = BIGNUM;
-
+				int minRoot = bestroot[low][high-1];
+				int min = cost[low][high-1] + cost[high+1][high];
+				
 				// find minimum cost
-				for (int r = low; r <= high; r++)
+				for (int r = minRoot; r <= bestroot[low+1][high]; r++)
 				{
-					int c = cost[low][r-1] + cost[r+1][high] + sumFreq_arr(low, high);
-					if (c < cost[low][high])
+					int c = cost[low][r-1] + cost[r+1][high];
+					if (c < min)
 					{
-						cost[low][high] = c;
-						bestroot[low][high] = r;
+						min = c;
+						minRoot = r;
 					}
+					
+					cost[low][high] = min + sumFreq_arr(low, high);
+					bestroot[low][high] = minRoot;
 				}
 			}
 		}
