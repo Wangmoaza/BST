@@ -98,18 +98,21 @@ public class BST
 		if (sumFreqArr == null)
 			build_sumFreqArr();
 		
-		// construct cost and bestroot matrix
-		for (int i = 1; i <= nodeCnt+1; i++) // initialize empty trees to zero
-			cost[i][i-1] = 0;
+		// when low = high
+		for (int i = 1; i <= nodeCnt; i++)
+		{
+			cost[i][i] = nodeArr[i].getFreq();
+			bestroot[i][i] = i;
+		}
 
 		// diagonally build matrix
-		for (int k = 1; k <= nodeCnt; k++)
+		for (int k = 2; k <= nodeCnt; k++)
 		{
 			for (int low = 1; low <= nodeCnt-k+1; low++)
 			{
 				int high = low + k - 1;
 				int minRoot = bestroot[low][high-1];
-				int min = cost[low][high-1] + cost[high+1][high];
+				int min = BIGNUM;
 				
 				// find minimum cost
 				for (int r = minRoot; r <= bestroot[low+1][high]; r++)
