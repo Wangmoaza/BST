@@ -1,3 +1,9 @@
+/**
+ * @author Ha-Eun Hwangbo
+ * @version 2016.10.25
+ */
+
+
 public class Node
   {
 	  private String key;

@@ -1,5 +1,11 @@
 import java.lang.Math;
 
+/**
+ * @author Ha-Eun Hwangbo
+ * @version 2016.10.25
+ *
+ */
+
 public class AVL extends BST
 {
   public AVL() {  }
